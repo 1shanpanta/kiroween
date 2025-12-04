@@ -1,0 +1,21 @@
+{
+  "enabled": true,
+  "name": "Lint on Save",
+  "description": "Automatically runs yarn lint --fix and TypeScript type checking when saving TypeScript or TSX files in app, components, store, or utils directories",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "app/**/*.tsx",
+      "components/**/*.tsx",
+      "store/**/*.ts",
+      "utils/**/*.ts"
+    ]
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "yarn lint --fix && npx tsc --noEmit"
+  },
+  "workspaceFolderName": "kiroween-hackathon",
+  "shortName": "lint-on-save"
+}

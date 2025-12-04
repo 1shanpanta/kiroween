@@ -1,0 +1,12 @@
+{
+  "name": "Refine KIROWEEN App",
+  "description": "Continuously check and refine the app for submission readiness",
+  "trigger": {
+    "type": "manual"
+  },
+  "action": {
+    "type": "message",
+    "message": "Check the entire KIROWEEN POKEDEX app for:\n1. Missing implementations\n2. TypeScript errors\n3. Styling inconsistencies\n4. Missing assets\n5. Incomplete features from requirements.md\n\nFix any issues found and report completion status as a percentage."
+  },
+  "enabled": true
+}

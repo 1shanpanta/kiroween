@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Verify Zustand Patterns",
+  "description": "Verifies that Zustand store files use create from 'zustand', implement AsyncStorage for local caching, sync with Supabase for persistence, and follow the (set, get) => ({}) pattern",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "store/**/*.ts"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Review this Zustand store file and verify it follows these patterns:\n1. Uses create from 'zustand'\n2. Uses AsyncStorage for local caching\n3. Syncs with Supabase for persistence\n4. Follows (set, get) => ({}) pattern\n\nIf any patterns are missing or incorrect, provide specific feedback on what needs to be fixed."
+  }
+}

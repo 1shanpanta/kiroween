@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "name": "Verify Retro Styling",
+  "description": "Automatically verifies that React components follow retro styling conventions including NativeWind className usage, void-black backgrounds, standard-green/shadow-green colors, PressStart2P font, and no hardcoded colors outside the design system",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "app/**/*.tsx",
+      "components/**/*.tsx"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Review the edited file and verify it follows these retro styling conventions:\n1. Uses NativeWind className for styling (not style prop)\n2. Uses void-black for backgrounds\n3. Uses standard-green or shadow-green for text/borders\n4. Uses PressStart2P font family\n5. No hardcoded colors outside the design system\n\nIf any violations are found, clearly list them and suggest corrections. If everything looks good, confirm the styling is compliant."
+  }
+}

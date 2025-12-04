@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Test Gemini Integration",
+  "description": "Automatically verifies Gemini API integration including API key loading, model fallback list, MythicCard type validation, and rate limiting handling when utils/gemini.ts is saved",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "utils/gemini.ts"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Verify the Gemini integration in utils/gemini.ts by checking:\n1. API key is properly loaded from process.env.EXPO_PUBLIC_GEMINI_API_KEY\n2. Uses model fallback list with gemini-2.0-flash-lite as the first option\n3. Returns valid MythicCard type\n4. Handles rate limiting with model fallback mechanism\n\nReview the code and confirm all these requirements are met or identify any issues."
+  }
+}
