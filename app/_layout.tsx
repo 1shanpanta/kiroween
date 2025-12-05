@@ -16,26 +16,26 @@ export default function Layout() {
   const [loaded, error] = useFonts({
     'PressStart2P': PressStart2P_400Regular,
   });
-  const { loadUser, email, username, isLoading } = useAuthStore();
+  const { initialize, email, name, loading } = useAuthStore();
   const segments = useSegments();
   const router = useRouter();
 
   useEffect(() => {
-    loadUser();
+    initialize();
   }, []);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (loading) return;
 
     const inAuthGroup = segments[0] === 'login';
-    const hasUser = email && username;
+    const hasUser = email && name;
 
     if (!hasUser && !inAuthGroup) {
       router.replace('/login');
     } else if (hasUser && segments[0] === 'login') {
       router.replace('/');
     }
-  }, [email, username, segments, isLoading]);
+  }, [email, name, segments, loading]);
 
   useEffect(() => {
     if (loaded || error) {
