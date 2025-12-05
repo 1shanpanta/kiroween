@@ -1,21 +1,35 @@
-import * as Haptics from 'expo-haptics';
+let Haptics: any = null;
 
-export function lightHaptic() {
-  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+try {
+  Haptics = require('expo-haptics').default;
+} catch (error) {
+  console.log('Haptics not available');
 }
 
-export function mediumHaptic() {
-  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-}
-
-export function heavyHaptic() {
-  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-}
-
-export function successHaptic() {
-  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-}
-
-export function errorHaptic() {
-  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+export async function triggerHaptic(type: 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error' = 'light') {
+  if (!Haptics) return;
+  
+  try {
+    switch (type) {
+      case 'light':
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        break;
+      case 'medium':
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        break;
+      case 'heavy':
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+        break;
+      case 'success':
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        break;
+      case 'warning':
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+        break;
+      case 'error':
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        break;
+    }
+  } catch (error) {
+  }
 }

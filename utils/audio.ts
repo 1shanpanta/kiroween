@@ -1,41 +1,23 @@
-import { Audio } from 'expo-av';
-
-let scanSound: Audio.Sound | null = null;
-let saveSound: Audio.Sound | null = null;
-let errorSound: Audio.Sound | null = null;
-
-export async function initAudio() {
-  await Audio.setAudioModeAsync({
-    playsInSilentModeIOS: true,
-  });
+export async function playClickSound() {
+  console.log('[Audio] Click sound');
 }
 
-export async function playScanSound() {
-  if (!scanSound) {
-    const { sound } = await Audio.Sound.createAsync(
-      require('@/assets/sounds/scan.mp3')
-    );
-    scanSound = sound;
-  }
-  await scanSound.replayAsync();
+export async function playChargeSound() {
+  console.log('[Audio] Charge sound');
 }
 
-export async function playSaveSound() {
-  if (!saveSound) {
-    const { sound } = await Audio.Sound.createAsync(
-      require('@/assets/sounds/save.mp3')
-    );
-    saveSound = sound;
-  }
-  await saveSound.replayAsync();
+export async function playDialupSound() {
+  console.log('[Audio] Dialup sound');
 }
 
-export async function playErrorSound() {
-  if (!errorSound) {
-    const { sound } = await Audio.Sound.createAsync(
-      require('@/assets/sounds/error.mp3')
-    );
-    errorSound = sound;
-  }
-  await errorSound.replayAsync();
+export async function stopDialupSound() {
+  console.log('[Audio] Stop dialup sound');
+}
+
+export async function playTypewriterSound() {
+  console.log('[Audio] Typewriter sound');
+}
+
+export async function initializeAudio() {
+  console.log('[Audio] Initialized');
 }

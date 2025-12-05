@@ -1,61 +1,59 @@
-import { TouchableOpacity, Text, Animated } from 'react-native';
-import { useState, useRef } from 'react';
-import { lightHaptic } from '@/utils/haptics';
+import React, { useState } from 'react';
+import { TouchableOpacity, Text, TouchableOpacityProps } from 'react-native';
+import { triggerHaptic } from '@/utils/haptics';
 
-interface Props {
-  onPress: () => void;
-  children: React.ReactNode;
-  danger?: boolean;
-  disabled?: boolean;
+interface RetroButtonProps extends TouchableOpacityProps {
+  title?: string;
+  children?: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'danger';
+  loading?: boolean;
 }
 
-export function RetroButton({ onPress, children, danger = false, disabled = false }: Props) {
-  const [pressed, setPressed] = useState(false);
-  const translateY = useRef(new Animated.Value(0)).current;
+export function RetroButton({ title, children, variant = 'primary', loading, style, ...props }: RetroButtonProps) {
+  const [isPressed, setIsPressed] = useState(false);
 
   const handlePressIn = () => {
-    setPressed(true);
-    lightHaptic();
-    Animated.timing(translateY, {
-      toValue: 2,
-      duration: 50,
-      useNativeDriver: true,
-    }).start();
+    setIsPressed(true);
+    triggerHaptic('medium');
   };
 
   const handlePressOut = () => {
-    setPressed(false);
-    Animated.timing(translateY, {
-      toValue: 0,
-      duration: 50,
-      useNativeDriver: true,
-    }).start();
+    setIsPressed(false);
   };
 
+  const borderColor = variant === 'danger' ? 'border-fatal-red' : 'border-standard-green';
+  
+  const containerClasses = `
+    border-4 ${borderColor} 
+    px-6 py-3 
+    items-center justify-center
+    ${isPressed ? (variant === 'danger' ? 'bg-fatal-red' : 'bg-standard-green') : 'bg-void-black'}
+    ${props.disabled ? 'opacity-50' : ''}
+  `;
+
+  const textClasses = `
+    text-xs 
+    ${isPressed ? 'text-void-black' : (variant === 'danger' ? 'text-fatal-red' : 'text-standard-green')}
+  `;
+
   return (
-    <Animated.View style={{ transform: [{ translateY }] }}>
-      <TouchableOpacity
-        onPress={onPress}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-        disabled={disabled}
-        className={`
-          border-4 px-6 py-3
-          ${pressed ? 'bg-standard-green' : 'bg-void-black'}
-          ${danger ? 'border-fatal-red' : 'border-standard-green'}
-          ${disabled ? 'opacity-50' : ''}
-        `}
+    <TouchableOpacity
+      activeOpacity={1}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      className={containerClasses}
+      style={[
+        style,
+        isPressed && { transform: [{ translateY: 2 }] }
+      ]}
+      {...props}
+    >
+      <Text 
+        className={textClasses} 
+        style={{ fontFamily: 'PressStart2P' }}
       >
-        <Text
-          style={{ fontFamily: 'PressStart2P' }}
-          className={`
-            text-center text-xs
-            ${pressed ? 'text-void-black' : danger ? 'text-fatal-red' : 'text-standard-green'}
-          `}
-        >
-          {children}
-        </Text>
-      </TouchableOpacity>
-    </Animated.View>
+        {loading ? 'PROCESSING...' : (title || children)}
+      </Text>
+    </TouchableOpacity>
   );
 }

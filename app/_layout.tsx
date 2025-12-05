@@ -9,6 +9,8 @@ import { PressStart2P_400Regular } from '@expo-google-fonts/press-start-2p';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/store/authStore';
+import { useChallengeStore } from '@/store/challengeStore';
+import { useUserStore } from '@/store/userStore';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -16,26 +18,40 @@ export default function Layout() {
   const [loaded, error] = useFonts({
     'PressStart2P': PressStart2P_400Regular,
   });
-  const { initialize, email, name, loading } = useAuthStore();
+  const { initialize, email, name, initialized, loading } = useAuthStore();
+  const { checkAndRefreshDailyChallenges } = useChallengeStore();
+  const { loadUserStats } = useUserStore();
   const segments = useSegments();
   const router = useRouter();
 
+  // Initialize auth
   useEffect(() => {
     initialize();
   }, []);
 
+  // Initialize challenges and user stats when auth is ready
   useEffect(() => {
-    if (loading) return;
+    if (initialized && !loading && email && name) {
+      checkAndRefreshDailyChallenges();
+      loadUserStats();
+    }
+  }, [initialized, loading, email, name]);
+
+  // Handle navigation based on auth state
+  useEffect(() => {
+    if (!initialized || loading) return;
 
     const inAuthGroup = segments[0] === 'login';
     const hasUser = email && name;
 
     if (!hasUser && !inAuthGroup) {
+      // Redirect to login if no email/name
       router.replace('/login');
     } else if (hasUser && segments[0] === 'login') {
+      // Redirect to home if user is set and on login page
       router.replace('/');
     }
-  }, [email, name, segments, loading]);
+  }, [email, name, segments, initialized, loading]);
 
   useEffect(() => {
     if (loaded || error) {
@@ -43,8 +59,10 @@ export default function Layout() {
     }
   }, [loaded, error]);
 
+  // Disable font scaling globally
   useEffect(() => {
     if (Platform.OS !== 'web') {
+      // Override Text component's defaultProps to disable font scaling
       const OriginalText = Text as any;
       if (OriginalText.defaultProps) {
         OriginalText.defaultProps.allowFontScaling = false;
@@ -63,7 +81,8 @@ export default function Layout() {
       <GestureHandlerRootView className="flex-1 bg-void-black">
         <Stack
           screenOptions={{
-            headerShown: false,
+            contentStyle: { backgroundColor: '#000000' },
+            headerStyle: { backgroundColor: '#000000' },
           }}
         />
       </GestureHandlerRootView>
