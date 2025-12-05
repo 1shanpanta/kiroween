@@ -1,35 +1,72 @@
-import { Stack } from 'expo-router';
-import { useEffect } from 'react';
-import { useFonts } from 'expo-font';
-import { PressStart2P_400Regular } from '@expo-google-fonts/press-start-2p';
-import * as SplashScreen from 'expo-splash-screen';
-import { Text } from 'react-native';
 import '../global.css';
+
+import { useFonts } from 'expo-font';
+import { Stack, useRouter, useSegments } from 'expo-router';
+import React, { useEffect } from 'react';
+import { Platform, Text } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
+import { PressStart2P_400Regular } from '@expo-google-fonts/press-start-2p';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useAuthStore } from '@/store/authStore';
 
 SplashScreen.preventAutoHideAsync();
 
-Text.defaultProps = Text.defaultProps || {};
-Text.defaultProps.allowFontScaling = false;
-
-export default function RootLayout() {
-  const [fontsLoaded] = useFonts({
-    PressStart2P: PressStart2P_400Regular,
+export default function Layout() {
+  const [loaded, error] = useFonts({
+    'PressStart2P': PressStart2P_400Regular,
   });
+  const { loadUser, email, username, isLoading } = useAuthStore();
+  const segments = useSegments();
+  const router = useRouter();
 
   useEffect(() => {
-    if (fontsLoaded) {
+    loadUser();
+  }, []);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    const inAuthGroup = segments[0] === 'login';
+    const hasUser = email && username;
+
+    if (!hasUser && !inAuthGroup) {
+      router.replace('/login');
+    } else if (hasUser && segments[0] === 'login') {
+      router.replace('/');
+    }
+  }, [email, username, segments, isLoading]);
+
+  useEffect(() => {
+    if (loaded || error) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [loaded, error]);
 
-  if (!fontsLoaded) return null;
+  useEffect(() => {
+    if (Platform.OS !== 'web') {
+      const OriginalText = Text as any;
+      if (OriginalText.defaultProps) {
+        OriginalText.defaultProps.allowFontScaling = false;
+      } else {
+        OriginalText.defaultProps = { allowFontScaling: false };
+      }
+    }
+  }, []);
+
+  if (!loaded && !error) {
+    return null;
+  }
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        contentStyle: { backgroundColor: '#000000' },
-      }}
-    />
+    <SafeAreaProvider>
+      <GestureHandlerRootView className="flex-1 bg-void-black">
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        />
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }
