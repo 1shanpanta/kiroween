@@ -154,11 +154,8 @@ This project was built for the KIROWEEN 2025 hackathon in the **Resurrection** c
 
 Growing up, I was obsessed with Pokémon. The Pokédex was magical - point it at a creature and instantly get its data, stats, and backstory. That sense of discovery and collection stuck with me.
 
-For this hackathon, I wanted to resurrect that Pokédex experience - the joy of scanning real-world objects and transforming them into collectibles with lore, rarity, and stats. But instead of cute creatures, I reimagined it for a dystopian future where everyday objects become cursed artifacts, displayed through a retro CRT terminal interface.
+For this hackathon, I wanted to resurrect that Pokédex experience - the joy of scanning real-world objects and transforming them into collectibles with lore, rarity, and stats.
 
-## Contributing
-
-This project was built as a creative experiment. Feel free to fork and modify for your own dystopian visions.
 
 ## License
 
